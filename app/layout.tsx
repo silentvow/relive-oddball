@@ -14,11 +14,13 @@ const noto = Noto_Sans_TC({
 });
 
 export const metadata: Metadata = {
-  title: "ReLive Oddball — 誰最奇怪？",
-  description: "拖出你心目中的 ReLive Project Vtuber 奇怪度排行。奇怪沒有對錯，就是你的感覺。",
+  title: "李賴虎怪咖排名生成器 — 誰最奇怪？",
+  description:
+    "選出你心目中的 ReLive Project Vtuber 怪咖排行。奇怪沒有對錯，就是你的感覺。",
   openGraph: {
-    title: "ReLive Oddball — 誰最奇怪？",
-    description: "拖出你心目中的 ReLive Project Vtuber 奇怪度排行。",
+    title: "李賴虎怪咖排名生成器 — 誰最奇怪？",
+    description:
+      "選出你心目中的 ReLive Project Vtuber 怪咖排行。奇怪沒有對錯，就是你的感覺。",
     type: "website",
   },
 };

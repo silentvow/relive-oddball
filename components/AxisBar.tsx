@@ -10,7 +10,7 @@ export function AxisBar() {
       <span className="hidden text-ink-ghost sm:inline">────────────────→</span>
       <span className="text-ink-ghost sm:hidden">→</span>
       <span className="flex items-center gap-1.5">
-        <span className="font-medium">15 = 最不奇怪</span>
+        <span className="font-medium">15 = 最正常</span>
         <span className="inline-block h-3 w-3 rounded-full bg-rank-cold" />
       </span>
     </div>

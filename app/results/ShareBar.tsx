@@ -18,14 +18,19 @@ export function ShareBar({ uuid, ranking, byId }: Props) {
   const [downloading, setDownloading] = useState(false);
 
   const shareUrl =
-    typeof window !== "undefined" ? `${window.location.origin}/share/${uuid}` : "";
+    typeof window !== "undefined"
+      ? `${window.location.origin}/share/${uuid}`
+      : "";
 
   async function handleDownload() {
     if (!cardRef.current) return;
     setDownloading(true);
     try {
       // pixelRatio: 2 → retina-quality PNG. cacheBust avoids stale fonts.
-      const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true });
+      const dataUrl = await toPng(cardRef.current, {
+        pixelRatio: 2,
+        cacheBust: true,
+      });
       const a = document.createElement("a");
       a.href = dataUrl;
       a.download = `relive-oddball-${new Date().toISOString().slice(0, 10)}.png`;
@@ -40,7 +45,7 @@ export function ShareBar({ uuid, ranking, byId }: Props) {
 
   async function handleShare() {
     const shareData = {
-      title: "我的 ReLive Oddball 排名",
+      title: "我的李賴虎怪咖排名",
       text: "誰最奇怪？這是我的排名 →",
       url: shareUrl,
     };

@@ -31,7 +31,9 @@ export default async function SharePage({ params }: { params: Params }) {
   ]);
   if (!ranking || ranking.length === 0) notFound();
 
-  const byId: Record<number, Vtuber> = Object.fromEntries(vtubers.map((v) => [v.id, v]));
+  const byId: Record<number, Vtuber> = Object.fromEntries(
+    vtubers.map((v) => [v.id, v]),
+  );
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 md:py-12">
@@ -43,7 +45,8 @@ export default async function SharePage({ params }: { params: Params }) {
           這是某人的奇怪度排名
         </h1>
         <p className="mt-1 text-sm text-ink-mute">
-          奇怪沒有對錯，就是 ta 的感覺 · 全站已有 {count.toLocaleString()} 人投票
+          奇怪沒有對錯，就是 ta 的感覺 · 全站已有 {count.toLocaleString()}{" "}
+          人投票
         </p>
       </header>
 
@@ -79,7 +82,7 @@ export default async function SharePage({ params }: { params: Params }) {
                   className="ml-auto rounded-full px-1.5 py-0.5 text-[9px] font-medium"
                   style={{ background: c.bg, color: c.fg }}
                 >
-                  最不奇怪
+                  最正常
                 </span>
               )}
             </li>

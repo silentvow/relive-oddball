@@ -41,7 +41,7 @@ export const ShareCard = forwardRef<HTMLDivElement, Props>(function ShareCard(
             letterSpacing: "0.05em",
           }}
         >
-          ReLive Oddball · 我的 ReLive 奇怪度排名
+          ReLive Project · 我的李賴虎怪咖排名
         </div>
         <div style={{ fontSize: 12, color: "#B5A990", marginTop: 4 }}>
           奇怪沒有對錯，就是我的感覺 · {today}
@@ -109,7 +109,9 @@ export const ShareCard = forwardRef<HTMLDivElement, Props>(function ShareCard(
           color: "#B5A990",
         }}
       >
-        <span style={{ fontWeight: 500, color: "#8A7E6E" }}>#ReLiveOddball</span>
+        <span style={{ fontWeight: 500, color: "#8A7E6E" }}>
+          #ReLiveOddball
+        </span>
         <span>relive-oddball.vercel.app</span>
       </div>
     </div>

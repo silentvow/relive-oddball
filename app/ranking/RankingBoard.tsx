@@ -54,7 +54,9 @@ const parseSlotId = (id: string) => parseInt(id.slice(5), 10);
 
 function freshState(vtubers: Vtuber[]): DraftState {
   return {
-    pool: [...vtubers].sort((a, b) => a.displayOrder - b.displayOrder).map((v) => v.id),
+    pool: [...vtubers]
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map((v) => v.id),
     slots: Array(15).fill(null),
   };
 }
@@ -74,7 +76,11 @@ const collisionDetection: CollisionDetection = (args) => {
 
 export function RankingBoard({ vtubers, submissionCount }: Props) {
   const byId = useMemo(
-    () => Object.fromEntries(vtubers.map((v) => [v.id, v])) as Record<number, Vtuber>,
+    () =>
+      Object.fromEntries(vtubers.map((v) => [v.id, v])) as Record<
+        number,
+        Vtuber
+      >,
     [vtubers],
   );
 
@@ -108,8 +114,12 @@ export function RankingBoard({ vtubers, submissionCount }: Props) {
   //     to move, Space again to drop. Critical for vision-impaired users.
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
   function findContainerOf(vtuberId: number): string {
@@ -131,7 +141,12 @@ export function RankingBoard({ vtubers, submissionCount }: Props) {
     return null;
   }
 
-  function applyMove(activeVtuberId: number, sourceContainer: string, targetContainer: string, overId: string) {
+  function applyMove(
+    activeVtuberId: number,
+    sourceContainer: string,
+    targetContainer: string,
+    overId: string,
+  ) {
     setState((prev) => {
       // Reorder within pool
       if (sourceContainer === POOL_ID && targetContainer === POOL_ID) {
@@ -175,7 +190,10 @@ export function RankingBoard({ vtubers, submissionCount }: Props) {
       }
 
       // Slot → slot (swap)
-      if (sourceContainer.startsWith("slot-") && targetContainer.startsWith("slot-")) {
+      if (
+        sourceContainer.startsWith("slot-") &&
+        targetContainer.startsWith("slot-")
+      ) {
         const sourceRank = parseSlotId(sourceContainer);
         const targetRank = parseSlotId(targetContainer);
         if (sourceRank === targetRank) return prev;
@@ -249,7 +267,10 @@ export function RankingBoard({ vtubers, submissionCount }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr]">
         {/* CANDIDATE POOL */}
         <PoolContainer remaining={remaining}>
-          <SortableContext items={state.pool.map(itemId)} strategy={rectSortingStrategy}>
+          <SortableContext
+            items={state.pool.map(itemId)}
+            strategy={rectSortingStrategy}
+          >
             <div className="grid grid-cols-5 justify-items-center gap-2 md:grid-cols-4">
               {state.pool.map((vtuberId) => (
                 <SortableVtuber
@@ -282,9 +303,13 @@ export function RankingBoard({ vtubers, submissionCount }: Props) {
       {/* SUBMIT BAR */}
       <div className="sticky bottom-3 z-10 mt-5 flex items-center justify-between gap-3 rounded-card border-[1.5px] border-edge bg-cream-card/95 px-4 py-2.5 backdrop-blur">
         <span className="text-xs text-ink-mute">
-          {remaining > 0 ? `還有 ${remaining} 位待安排` : "全部排好了，可以送出"}
+          {remaining > 0
+            ? `還有 ${remaining} 位待安排`
+            : "全部排好了，可以送出"}
           {submissionCount > 0 && (
-            <span className="ml-2 text-ink-ghost">· 已有 {submissionCount.toLocaleString()} 人投票</span>
+            <span className="ml-2 text-ink-ghost">
+              · 已有 {submissionCount.toLocaleString()} 人投票
+            </span>
           )}
         </span>
         <div className="flex items-center gap-2">
@@ -332,7 +357,13 @@ export function RankingBoard({ vtubers, submissionCount }: Props) {
 // ----------------------------------------------------------------
 // Pool container — droppable wrapper around the SortableContext
 // ----------------------------------------------------------------
-function PoolContainer({ remaining, children }: { remaining: number; children: React.ReactNode }) {
+function PoolContainer({
+  remaining,
+  children,
+}: {
+  remaining: number;
+  children: React.ReactNode;
+}) {
   const { setNodeRef, isOver } = useDroppable({ id: POOL_ID });
   return (
     <div
@@ -408,7 +439,11 @@ function RankSlotRow({
         )}
       </SortableContext>
       <span className="text-[12px] text-ink">
-        {filled ? vtuber?.name : <span className="text-ink-ghost">拖一個進來</span>}
+        {filled ? (
+          vtuber?.name
+        ) : (
+          <span className="text-ink-ghost">拖一個進來</span>
+        )}
       </span>
       {rank === 1 && (
         <span
@@ -423,7 +458,7 @@ function RankSlotRow({
           className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-medium"
           style={{ background: c.bg, color: c.fg }}
         >
-          最不奇怪
+          最正常
         </span>
       )}
     </li>
@@ -442,8 +477,14 @@ function SortableVtuber({
   size: number;
   inSlot: boolean;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: itemId(vtuber.id) });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: itemId(vtuber.id) });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),

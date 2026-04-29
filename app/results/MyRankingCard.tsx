@@ -12,7 +12,7 @@ export function MyRankingCard({ ranking, byId }: Props) {
   return (
     <section className="rounded-card border-[1.5px] border-edge bg-cream-card px-4 py-4">
       <h2 className="text-sm font-medium text-ink-mute">我的排名</h2>
-      <p className="mb-3 text-xs text-ink-ghost">1 = 最奇怪　15 = 最不奇怪</p>
+      <p className="mb-3 text-xs text-ink-ghost">1 = 最奇怪　15 = 最正常</p>
       <ol className="columns-2 gap-4 [&>li]:break-inside-avoid">
         {ranking.map(({ vtuberId, rank }) => {
           const v = byId[vtuberId];
@@ -22,9 +22,13 @@ export function MyRankingCard({ ranking, byId }: Props) {
               key={rank}
               className="flex items-center gap-2 py-1 text-base text-ink"
             >
-              <span className="w-6 text-right text-sm text-ink-ghost">{rank}</span>
+              <span className="w-6 text-right text-sm text-ink-ghost">
+                {rank}
+              </span>
               <Avatar vtuber={v} size={40} />
-              <span>{v.name}</span>
+              <span className="flex-1 min-w-0 whitespace-pre-wrap">
+                {v.name.replace(" ", "\n")}
+              </span>
             </li>
           );
         })}

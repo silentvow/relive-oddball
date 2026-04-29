@@ -30,7 +30,8 @@ export default async function ResultsPage({
 }: {
   searchParams?: SearchParams;
 }) {
-  const u = searchParams?.u && UUID_RE.test(searchParams.u) ? searchParams.u : null;
+  const u =
+    searchParams?.u && UUID_RE.test(searchParams.u) ? searchParams.u : null;
 
   const [vtubers, leaderboard, heatmap, count, myRanking] = await Promise.all([
     fetchVtubers(),
@@ -86,7 +87,7 @@ export default async function ResultsPage({
           href="/"
           className="rounded-full border-2 border-ink bg-rank-cold px-4 py-1.5 text-xs font-medium text-[#2D4A3A] hover:bg-rank-cool"
         >
-          {myRanking ? "重新排我的" : "去投我的一票 →"}
+          {myRanking ? "重新排名" : "去投我的一票 →"}
         </Link>
       </div>
 
