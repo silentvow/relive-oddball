@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background: #F5EBD8;
+  color: #3A3530;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  /* Visible focus ring for keyboard nav. Browsers default to outline:auto on
+     :focus-visible — we use a custom ring that matches the warm palette so it
+     doesn't look like the host browser's blue outline. */
+  *:focus { outline: none; }
+  *:focus-visible {
+    outline: 2px solid #8E6F3A;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Toast pop-in: rises from below + fades in. */
+  .animate-toast-in {
+    animation: toast-in 220ms ease-out;
+  }
+
+  /* Slot just got filled — subtle warm flash so the user notices the drop. */
+  .animate-slot-fill {
+    animation: slot-fill 380ms ease-out;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(90deg, #EFE5CB 0%, #F5EBD8 50%, #EFE5CB 100%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slot-fill {
+  0%   { background-color: #FAF4E5; }
+  35%  { background-color: #EFE5CB; }
+  100% { background-color: #FAF4E5; }
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Respect user's "reduce motion" OS setting (System Preferences > Accessibility
+   on macOS, Settings > Accessibility > Motion on iOS, etc.). Important for
+   users with vestibular disorders. We keep transforms instant but still allow
+   color/opacity transitions because those don't trigger motion sickness. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
