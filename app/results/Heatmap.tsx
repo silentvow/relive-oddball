@@ -47,14 +47,16 @@ export function Heatmap({ matrix, rowOrder }: Props) {
           const rowMax = Math.max(0, ...row);
           return (
             <div key={v.id} className="flex items-center gap-1.5">
-              <span className="w-10 truncate text-[10px] text-ink-soft">{v.code}</span>
+              <span className="w-10 truncate text-[10px] text-ink-soft">
+                {v.name.slice(0, v.name.indexOf(" "))}
+              </span>
               <div className="grid flex-1 grid-cols-[repeat(15,minmax(0,1fr))] gap-[2px]">
                 {Array.from({ length: 15 }, (_, i) => i).map((rankIdx) => (
                   <div
                     key={rankIdx}
                     className="h-3.5 rounded-sm"
                     style={{ background: shadeFor(row[rankIdx] ?? 0, rowMax) }}
-                    title={`${v.code} · 第 ${rankIdx + 1} 名 · ${row[rankIdx] ?? 0} 票`}
+                    title={`${v.name.slice(0, v.name.indexOf(" "))} · 第 ${rankIdx + 1} 名 · ${row[rankIdx] ?? 0} 票`}
                   />
                 ))}
               </div>
@@ -66,10 +68,22 @@ export function Heatmap({ matrix, rowOrder }: Props) {
       {/* Legend */}
       <div className="mt-3 flex items-center justify-end gap-2 text-[10px] text-ink-ghost">
         <span>少</span>
-        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#ECE2CB" }} />
-        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#DCC499" }} />
-        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#B89366" }} />
-        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#8E6F3A" }} />
+        <span
+          className="inline-block h-2.5 w-2.5 rounded-sm"
+          style={{ background: "#ECE2CB" }}
+        />
+        <span
+          className="inline-block h-2.5 w-2.5 rounded-sm"
+          style={{ background: "#DCC499" }}
+        />
+        <span
+          className="inline-block h-2.5 w-2.5 rounded-sm"
+          style={{ background: "#B89366" }}
+        />
+        <span
+          className="inline-block h-2.5 w-2.5 rounded-sm"
+          style={{ background: "#8E6F3A" }}
+        />
         <span>多</span>
       </div>
     </section>
