@@ -1,7 +1,8 @@
 import type { Vtuber } from "@/lib/vtubers";
 
 type Props = {
-  // matrix[vtuberId-1][rank-1] = vote count
+  // matrix[vtuberId-1][rank-1] = vote count.
+  // Length must match rowOrder.length on both axes.
   matrix: number[][];
   // Order to display rows. Usually we follow the leaderboard order so the
   // diagonal pattern emerges visually (most-weird at top, votes peak at low
@@ -21,7 +22,28 @@ function shadeFor(count: number, rowMax: number): string {
   return "#ECE2CB"; // faint
 }
 
+// "灰妲 DaDa" → "灰妲". Falls back to the full name if there's no space
+// (e.g. placeholder "WL-1" before real data lands).
+function displayName(name: string): string {
+  const i = name.indexOf(" ");
+  return i > 0 ? name.slice(0, i) : name;
+}
+
+// Tailwind needs static class strings at build time. Pre-declare both
+// supported sizes; pick at render. Add more here if a future ranking uses
+// a different count.
+const COLS_CLASS: Record<number, string> = {
+  7:  "grid-cols-[repeat(7,minmax(0,1fr))]",
+  15: "grid-cols-[repeat(15,minmax(0,1fr))]",
+};
+
 export function Heatmap({ matrix, rowOrder }: Props) {
+  const dim = rowOrder.length;
+  const colsClass = COLS_CLASS[dim] ?? COLS_CLASS[15];
+
+  // Sparse markers along the column header so it doesn't look noisy.
+  const markers = dim === 7 ? new Set([1, 4, 7]) : new Set([1, 5, 10, 15]);
+
   return (
     <section className="rounded-card border-[1.5px] border-edge bg-cream-card px-4 py-3">
       <h2 className="text-xs font-medium text-ink-mute">投票分佈熱力圖</h2>
@@ -29,13 +51,12 @@ export function Heatmap({ matrix, rowOrder }: Props) {
         越深 = 越多人把這位放在那個名次
       </p>
 
-      {/* Column header: 1, 5, 10, 15 markers */}
       <div className="mb-1 flex items-center gap-1.5">
         <span className="w-10 text-[10px] text-ink-ghost">名次</span>
-        <div className="grid flex-1 grid-cols-[repeat(15,minmax(0,1fr))] gap-[2px] text-[9px] text-ink-ghost">
-          {Array.from({ length: 15 }, (_, i) => i + 1).map((r) => (
+        <div className={`grid flex-1 ${colsClass} gap-[2px] text-[9px] text-ink-ghost`}>
+          {Array.from({ length: dim }, (_, i) => i + 1).map((r) => (
             <span key={r} className="text-center">
-              {r === 1 || r === 5 || r === 10 || r === 15 ? r : ""}
+              {markers.has(r) ? r : ""}
             </span>
           ))}
         </div>
@@ -45,18 +66,19 @@ export function Heatmap({ matrix, rowOrder }: Props) {
         {rowOrder.map((v) => {
           const row = matrix[v.id - 1] ?? [];
           const rowMax = Math.max(0, ...row);
+          const label = displayName(v.name);
           return (
             <div key={v.id} className="flex items-center gap-1.5">
               <span className="w-10 truncate text-[10px] text-ink-soft">
-                {v.name.slice(0, v.name.indexOf(" "))}
+                {label}
               </span>
-              <div className="grid flex-1 grid-cols-[repeat(15,minmax(0,1fr))] gap-[2px]">
-                {Array.from({ length: 15 }, (_, i) => i).map((rankIdx) => (
+              <div className={`grid flex-1 ${colsClass} gap-[2px]`}>
+                {Array.from({ length: dim }, (_, i) => i).map((rankIdx) => (
                   <div
                     key={rankIdx}
                     className="h-3.5 rounded-sm"
                     style={{ background: shadeFor(row[rankIdx] ?? 0, rowMax) }}
-                    title={`${v.name.slice(0, v.name.indexOf(" "))} · 第 ${rankIdx + 1} 名 · ${row[rankIdx] ?? 0} 票`}
+                    title={`${label} · 第 ${rankIdx + 1} 名 · ${row[rankIdx] ?? 0} 票`}
                   />
                 ))}
               </div>
@@ -68,22 +90,10 @@ export function Heatmap({ matrix, rowOrder }: Props) {
       {/* Legend */}
       <div className="mt-3 flex items-center justify-end gap-2 text-[10px] text-ink-ghost">
         <span>少</span>
-        <span
-          className="inline-block h-2.5 w-2.5 rounded-sm"
-          style={{ background: "#ECE2CB" }}
-        />
-        <span
-          className="inline-block h-2.5 w-2.5 rounded-sm"
-          style={{ background: "#DCC499" }}
-        />
-        <span
-          className="inline-block h-2.5 w-2.5 rounded-sm"
-          style={{ background: "#B89366" }}
-        />
-        <span
-          className="inline-block h-2.5 w-2.5 rounded-sm"
-          style={{ background: "#8E6F3A" }}
-        />
+        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#ECE2CB" }} />
+        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#DCC499" }} />
+        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#B89366" }} />
+        <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: "#8E6F3A" }} />
         <span>多</span>
       </div>
     </section>

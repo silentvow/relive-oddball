@@ -2,22 +2,23 @@ import Link from "next/link";
 
 import { AxisBar } from "@/components/AxisBar";
 import {
-  fetchHeatmap,
-  fetchLeaderboard,
-  fetchMyRanking,
-  fetchSubmissionCount,
-  fetchVtubers,
-} from "@/lib/data";
+  fetchHeatmapWL,
+  fetchLeaderboardWL,
+  fetchMyRankingWL,
+  fetchSubmissionCountWL,
+  fetchVtubersWL,
+} from "@/lib/dataWL";
 import type { Vtuber } from "@/lib/vtubers";
 
-import { Heatmap } from "./Heatmap";
-import { LeaderboardCard } from "./LeaderboardCard";
-import { MyRankingCard } from "./MyRankingCard";
+// Reuse presentational components from the main results page — they're
+// length-agnostic.
+import { Heatmap } from "@/app/results/Heatmap";
+import { LeaderboardCard } from "@/app/results/LeaderboardCard";
+import { MyRankingCard } from "@/app/results/MyRankingCard";
+
 import { ShareBar } from "./ShareBar";
 import { UuidRedirect } from "./UuidRedirect";
 
-// Refresh leaderboard / heatmap every minute. Each submission also forcibly
-// revalidates this path (see app/actions.ts).
 export const revalidate = 60;
 
 const UUID_RE =
@@ -25,7 +26,7 @@ const UUID_RE =
 
 type SearchParams = { u?: string };
 
-export default async function ResultsPage({
+export default async function WangLowResultsPage({
   searchParams,
 }: {
   searchParams?: SearchParams;
@@ -34,11 +35,11 @@ export default async function ResultsPage({
     searchParams?.u && UUID_RE.test(searchParams.u) ? searchParams.u : null;
 
   const [vtubers, leaderboard, heatmap, count, myRanking] = await Promise.all([
-    fetchVtubers(),
-    fetchLeaderboard(),
-    fetchHeatmap(),
-    fetchSubmissionCount(),
-    u ? fetchMyRanking(u) : Promise.resolve(null),
+    fetchVtubersWL(),
+    fetchLeaderboardWL(),
+    fetchHeatmapWL(),
+    fetchSubmissionCountWL(),
+    u ? fetchMyRankingWL(u) : Promise.resolve(null),
   ]);
 
   const byId: Record<number, Vtuber> = Object.fromEntries(
@@ -51,7 +52,7 @@ export default async function ResultsPage({
 
       <header className="mb-6 text-center">
         <h1 className="text-2xl font-medium md:text-3xl">
-          {myRanking ? "謝謝你的勇敢發言！" : "全站排行榜"}
+          {myRanking ? "謝謝你的勇敢發言！" : "海亞！法克你又望樓 · 全站排行榜"}
         </h1>
         <p className="mt-1 text-sm text-ink-mute">
           已有 {count.toLocaleString()} 人投票
@@ -59,10 +60,9 @@ export default async function ResultsPage({
       </header>
 
       <div className="mb-4">
-        <AxisBar />
+        <AxisBar count={vtubers.length} />
       </div>
 
-      {/* My ranking + Leaderboard. On desktop side-by-side, on mobile stacked. */}
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         {myRanking ? (
           <MyRankingCard ranking={myRanking} byId={byId} />
@@ -84,24 +84,20 @@ export default async function ResultsPage({
 
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Link
-          href="/"
+          href="/wang-low"
           className="rounded-full border-2 border-ink bg-rank-cold px-4 py-1.5 text-xs font-medium text-[#2D4A3A] hover:bg-rank-cool"
         >
-          {myRanking ? "重新排名" : "去投我的一票 →"}
+          {myRanking ? "重新排我的" : "去投我的一票 →"}
         </Link>
-      </div>
-
-      <div className="mt-8 text-center text-xs text-ink-mute">
-        想排另一組？{" "}
         <Link
-          href="/wang-low"
-          className="underline decoration-edge underline-offset-2 hover:text-ink"
+          href="/"
+          className="rounded-full border border-edge-soft bg-cream-card px-3 py-1.5 text-xs text-ink-mute hover:bg-cream-deep"
         >
-          海亞！法克你又望樓怪咖排名 →
+          ← 回到 15 人怪咖排名
         </Link>
       </div>
 
-      <footer className="mt-6 text-center text-[11px] text-ink-ghost">
+      <footer className="mt-10 text-center text-[11px] text-ink-ghost">
         Powered by 彼得與狼
       </footer>
     </main>
